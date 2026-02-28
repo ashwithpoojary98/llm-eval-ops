@@ -41,7 +41,6 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 - **LLM Provider Support** - OpenAI, Anthropic, Azure OpenAI, AWS Bedrock, Google Vertex AI, Custom APIs
 - **20+ Evaluation Metrics** - Traditional NLP, RAG-specific, and LLM-as-Judge
 - **Parallel Execution** - Fast evaluation with automatic retry handling
-- **CI/CD Integration** - API keys, webhooks, GitHub/GitLab integration
 - **Cost & Token Tracking** - Monitor usage and costs across evaluations
 - **Regression Detection** - Compare runs and detect quality degradation
 
@@ -104,8 +103,8 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ashwithpoojary98/llmops-eval.git
-cd llmops-eval
+git clone https://github.com/ashwithpoojary98/llm-eval-ops.git
+cd llm-eval-ops
 ```
 
 ### 2. Database Setup
@@ -404,8 +403,8 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/ashwithpoojary98/llmops-eval/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ashwithpoojary98/llmops-eval/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ashwithpoojary98/llm-eval-ops/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ashwithpoojary98/llm-eval-ops/discussions)
 - **Email**: ashwithpoojary98@gmail.com
 
 ---
