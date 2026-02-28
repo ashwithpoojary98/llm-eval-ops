@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+"""
+Development server runner.
+"""
+import uvicorn
+from app.config import get_settings
+
+settings = get_settings()
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "app.main:app",
+        host=settings.host,
+        port=settings.port,
+        reload=True,  # Enable hot reload for development
+        log_level="info",
+    )

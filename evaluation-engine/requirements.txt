@@ -1,0 +1,44 @@
+# FastAPI Framework
+fastapi>=0.109.2
+uvicorn[standard]>=0.27.1
+pydantic>=2.6.1
+pydantic-settings>=2.1.0
+python-multipart>=0.0.9
+
+# Database (PostgreSQL)
+sqlalchemy[asyncio]>=2.0.25
+asyncpg>=0.29.0
+alembic>=1.13.1
+
+# LLM Clients
+openai>=1.12.0
+anthropic>=0.18.1
+httpx>=0.26.0
+tenacity>=8.2.3  # Retry logic
+
+# Traditional NLP Metrics
+nltk>=3.8.1
+rouge-score>=0.1.2
+python-Levenshtein>=0.25.0
+
+# Semantic Metrics
+sentence-transformers>=2.3.1
+torch>=2.6.0
+numpy>=1.26.4
+
+# RAG Metrics (RAGAS)
+ragas>=0.1.4
+langchain>=0.1.6
+langchain-openai>=0.0.5
+
+# BERTScore
+bert-score>=0.3.13
+
+# Utilities
+python-dotenv>=1.0.1
+structlog>=24.1.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.4
+pytest-cov>=4.1.0
