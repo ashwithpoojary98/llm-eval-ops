@@ -32,6 +32,45 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 
 ---
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Login</b></td>
+    <td align="center"><b>Dashboard</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/login.png" alt="Login" width="100%"/></td>
+    <td><img src="assets/screenshots/dashboard.png" alt="Dashboard" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Projects</b></td>
+    <td align="center"><b>Datasets</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/project.png" alt="Projects" width="100%"/></td>
+    <td><img src="assets/screenshots/datasets.png" alt="Datasets" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Test Cases</b></td>
+    <td align="center"><b>Teams</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/testcases.png" alt="Test Cases" width="100%"/></td>
+    <td><img src="assets/screenshots/teams.png" alt="Teams" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Users</b></td>
+    <td align="center"><b>Settings</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/Users.png" alt="Users" width="100%"/></td>
+    <td><img src="assets/screenshots/Setting.png" alt="Settings" width="100%"/></td>
+  </tr>
+</table>
+
+---
+
 ## Key Features
 
 ### 🎯 Core Capabilities
