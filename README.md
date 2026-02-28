@@ -41,7 +41,6 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 - **LLM Provider Support** - OpenAI, Anthropic, Azure OpenAI, AWS Bedrock, Google Vertex AI, Custom APIs
 - **20+ Evaluation Metrics** - Traditional NLP, RAG-specific, and LLM-as-Judge
 - **Parallel Execution** - Fast evaluation with automatic retry handling
-- **CI/CD Integration** - API keys, webhooks, GitHub/GitLab integration
 - **Cost & Token Tracking** - Monitor usage and costs across evaluations
 - **Regression Detection** - Compare runs and detect quality degradation
 
