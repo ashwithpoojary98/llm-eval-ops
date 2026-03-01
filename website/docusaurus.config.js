@@ -7,10 +7,10 @@ const config = {
   favicon: 'img/favicon.ico',
 
   url: 'https://ashwithpoojary98.github.io',
-  baseUrl: '/llmops-eval/',
+  baseUrl: '/llm-eval-ops/',
 
   organizationName: 'ashwithpoojary98',
-  projectName: 'llmops-eval',
+  projectName: 'llm-eval-ops',
   trailingSlash: false,
 
   onBrokenLinks: 'warn',
