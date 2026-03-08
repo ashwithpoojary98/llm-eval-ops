@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "v1.1.0",
+  "project": {
+    "name": "LLMEvalOps",
+    "description": "Open-source, enterprise-ready platform for benchmarking, monitoring, and managing LLM & RAG applications with RBAC, structured workflows, and 20+ metrics.",
+    "repository": "https://github.com/ashwithpoojary98/llm-eval-ops",
+    "website": "https://ashwithpoojary98.github.io/llm-eval-ops/",
+    "license": "Apache-2.0"
+  },
+  "funding": {
+    "needs": [
+      {
+        "type": "development",
+        "amount": {
+          "currency": "INR",
+          "value": "20000",
+          "period": "one-time"
+        },
+        "description": "Full-time development for 6 months: Add more advanced RAG metrics, multi-modal eval support, better UI dashboards, and production hardening. (Equivalent to ~$30,000 USD)"
+      },
+      {
+        "type": "community",
+        "amount": {
+          "currency": "INR",
+          "value": "10000",
+          "period": "one-time"
+        },
+        "description": "Bounties for contributors, documentation, tutorials, and community events/meetups in Bengaluru. (Equivalent to ~$10,000 USD)"
+      }
+    ],
+    "totalRequested": {
+      "currency": "INR",
+      "value": "30000"
+    },
+    "plans": "Short-term: Reach 1.0 release with stable API and more integrations. Long-term: Become the go-to open alternative to proprietary LLM eval tools like LangSmith/DeepEval, support more providers, add auto-debugging features."
+  },
+  "contact": {
+    "email": "ashwithpoojary98@gmail.com",
+    "preferred": "email"
+  },
+  "acknowledgements": [
+    "Thanks to RAGAS, LangChain, Spring Boot, FastAPI, and Next.js communities."
+  ]
+}
