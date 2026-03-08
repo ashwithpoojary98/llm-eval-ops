@@ -9,8 +9,7 @@
     "phone": "",
     "description": "Independent open-source developer from Bengaluru, India, building tools for LLM and RAG evaluation, monitoring, and enterprise use. Passionate about making AI tooling accessible, transparent, and community-driven.",
     "webpageUrl": {
-      "url": "https://github.com/ashwithpoojary98",
-      "wellKnown": ""
+      "url": "https://github.com/ashwithpoojary98"
     }
   },
   "projects": [
@@ -19,12 +18,10 @@
       "name": "LLMEvalOps",
       "description": "Open-source, enterprise-ready platform for benchmarking, monitoring, and managing LLM & RAG applications. Features include multi-tenant support, RBAC, structured evaluation workflows, 20+ metrics (via RAGAS/LangChain integrations), and hybrid Java/Python backend with modern frontend.",
       "webpageUrl": {
-        "url": "https://ashwithpoojary98.github.io/llm-eval-ops/",
-        "wellKnown": ""
+        "url": "https://ashwithpoojary98.github.io/llm-eval-ops/"
       },
       "repositoryUrl": {
-        "url": "https://github.com/ashwithpoojary98/llm-eval-ops",
-        "wellKnown": ""
+        "url": "https://github.com/ashwithpoojary98/llm-eval-ops"
       },
       "licenses": [
         "spdx:Apache-2.0"
@@ -46,10 +43,10 @@
   "funding": {
     "channels": [
       {
-        "guid": "upi-bank",
-        "type": "bank",
-        "address": "Account details available on request via email",
-        "description": "Preferred for Indian donors/sponsors: Direct UPI transfers or bank transfers (INR). Email for full account info."
+        "guid": "github-sponsors",
+        "type": "payment-provider",
+        "address": "https://github.com/sponsors/ashwithpoojary98",
+        "description": "Support the project through GitHub Sponsors for ongoing development and maintenance. Contributions help fund new features, bug fixes, and community support."
       }
     ],
     "plans": [
@@ -61,7 +58,7 @@
         "amount": 30000,
         "currency": "INR",
         "frequency": "one-time",
-        "channels": ["upi-bank"]
+        "channels": ["github-sponsors"]
       },
       {
         "guid": "community-bounties",
@@ -71,7 +68,7 @@
         "amount": 20000,
         "currency": "INR",
         "frequency": "one-time",
-        "channels": ["upi-bank"]
+        "channels": ["github-sponsors"]
       },
       {
         "guid": "flexible",
@@ -81,7 +78,7 @@
         "amount": 0,
         "currency": "INR",
         "frequency": "one-time",
-        "channels": ["upi-bank"]
+        "channels": ["github-sponsors"]
       }
     ],
     "history": []
