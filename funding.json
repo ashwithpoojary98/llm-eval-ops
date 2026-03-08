@@ -1,44 +1,89 @@
 {
-  "schemaVersion": "v1.1.0",
-  "project": {
-    "name": "LLMEvalOps",
-    "description": "Open-source, enterprise-ready platform for benchmarking, monitoring, and managing LLM & RAG applications with RBAC, structured workflows, and 20+ metrics.",
-    "repository": "https://github.com/ashwithpoojary98/llm-eval-ops",
-    "website": "https://ashwithpoojary98.github.io/llm-eval-ops/",
-    "license": "Apache-2.0"
+  "$schema": "https://fundingjson.org/schema/v1.1.0.json",
+  "version": "v1.1.0",
+  "entity": {
+    "type": "individual",
+    "role": "maintainer",
+    "name": "Ashwith Poojary",
+    "email": "ashwithpoojary98@gmail.com",
+    "phone": "",
+    "description": "Independent open-source developer from Bengaluru, India, building tools for LLM and RAG evaluation, monitoring, and enterprise use. Passionate about making AI tooling accessible, transparent, and community-driven.",
+    "webpageUrl": {
+      "url": "https://github.com/ashwithpoojary98",
+      "wellKnown": ""
+    }
   },
-  "funding": {
-    "needs": [
-      {
-        "type": "development",
-        "amount": {
-          "currency": "INR",
-          "value": "20000",
-          "period": "one-time"
-        },
-        "description": "Full-time development for 6 months: Add more advanced RAG metrics, multi-modal eval support, better UI dashboards, and production hardening. (Equivalent to ~$30,000 USD)"
+  "projects": [
+    {
+      "guid": "llm-eval-ops",
+      "name": "LLMEvalOps",
+      "description": "Open-source, enterprise-ready platform for benchmarking, monitoring, and managing LLM & RAG applications. Features include multi-tenant support, RBAC, structured evaluation workflows, 20+ metrics (via RAGAS/LangChain integrations), and hybrid Java/Python backend with modern frontend.",
+      "webpageUrl": {
+        "url": "https://ashwithpoojary98.github.io/llm-eval-ops/",
+        "wellKnown": ""
       },
+      "repositoryUrl": {
+        "url": "https://github.com/ashwithpoojary98/llm-eval-ops",
+        "wellKnown": ""
+      },
+      "licenses": [
+        "spdx:Apache-2.0"
+      ],
+      "tags": [
+        "ai",
+        "llm",
+        "rag",
+        "evaluation",
+        "benchmarking",
+        "monitoring",
+        "opensource",
+        "python",
+        "java",
+        "nextjs"
+      ]
+    }
+  ],
+  "funding": {
+    "channels": [
       {
-        "type": "community",
-        "amount": {
-          "currency": "INR",
-          "value": "10000",
-          "period": "one-time"
-        },
-        "description": "Bounties for contributors, documentation, tutorials, and community events/meetups in Bengaluru. (Equivalent to ~$10,000 USD)"
+        "guid": "upi-bank",
+        "type": "bank",
+        "address": "Account details available on request via email",
+        "description": "Preferred for Indian donors/sponsors: Direct UPI transfers or bank transfers (INR). Email for full account info."
       }
     ],
-    "totalRequested": {
-      "currency": "INR",
-      "value": "30000"
-    },
-    "plans": "Short-term: Reach 1.0 release with stable API and more integrations. Long-term: Become the go-to open alternative to proprietary LLM eval tools like LangSmith/DeepEval, support more providers, add auto-debugging features."
-  },
-  "contact": {
-    "email": "ashwithpoojary98@gmail.com",
-    "preferred": "email"
-  },
-  "acknowledgements": [
-    "Thanks to RAGAS, LangChain, Spring Boot, FastAPI, and Next.js communities."
-  ]
+    "plans": [
+      {
+        "guid": "dev-fulltime",
+        "status": "active",
+        "name": "Full-time Development Sprint",
+        "description": "Support 6 months of focused full-time work: Add advanced RAG metrics, multi-modal evaluation, improved dashboards, production hardening, and more integrations.",
+        "amount": 30000,
+        "currency": "INR",
+        "frequency": "one-time",
+        "channels": ["upi-bank"]
+      },
+      {
+        "guid": "community-bounties",
+        "status": "active",
+        "name": "Community & Contributor Support",
+        "description": "Fund bounties for contributors, better docs/tutorials, regional language support, and Bengaluru meetups/events to grow the community.",
+        "amount": 20000,
+        "currency": "INR",
+        "frequency": "one-time",
+        "channels": ["upi-bank"]
+      },
+      {
+        "guid": "flexible",
+        "status": "active",
+        "name": "Any Amount Support",
+        "description": "Flexible donations to help sustain the project — any contribution appreciated!",
+        "amount": 0,
+        "currency": "INR",
+        "frequency": "one-time",
+        "channels": ["upi-bank"]
+      }
+    ],
+    "history": []
+  }
 }
