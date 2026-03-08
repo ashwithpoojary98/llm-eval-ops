@@ -9,7 +9,8 @@
     "phone": "",
     "description": "Independent open-source developer from Bengaluru, India, building tools for LLM and RAG evaluation, monitoring, and enterprise use. Passionate about making AI tooling accessible, transparent, and community-driven.",
     "webpageUrl": {
-      "url": "https://github.com/ashwithpoojary98"
+      "url": "https://github.com/ashwithpoojary98",
+      "wellKnown": "https://github.com/ashwithpoojary98/.well-known/funding-manifest-urls"
     }
   },
   "projects": [
@@ -18,10 +19,12 @@
       "name": "LLMEvalOps",
       "description": "Open-source, enterprise-ready platform for benchmarking, monitoring, and managing LLM & RAG applications. Features include multi-tenant support, RBAC, structured evaluation workflows, 20+ metrics (via RAGAS/LangChain integrations), and hybrid Java/Python backend with modern frontend.",
       "webpageUrl": {
-        "url": "https://ashwithpoojary98.github.io/llm-eval-ops/"
+        "url": "https://ashwithpoojary98.github.io/llm-eval-ops/",
+        "wellKnown": "https://github.com/ashwithpoojary98/.well-known/funding-manifest-urls"
       },
       "repositoryUrl": {
-        "url": "https://github.com/ashwithpoojary98/llm-eval-ops"
+        "url": "https://github.com/ashwithpoojary98/llm-eval-ops",
+        "wellKnown": "https://github.com/ashwithpoojary98/llm-eval-ops/.well-known/funding-manifest-urls"
       },
       "licenses": [
         "spdx:Apache-2.0"
