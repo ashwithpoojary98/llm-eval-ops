@@ -30,7 +30,7 @@ LLMOps Eval uses a **hybrid Spring Boot + FastAPI architecture** to get the best
            └──────────────┬──────────────┘
                           ▼
            ┌────────────────────────────┐
-           │      PostgreSQL + Redis     │
+           │          PostgreSQL         │
            └────────────────────────────┘
 ```
 

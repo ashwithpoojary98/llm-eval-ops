@@ -34,13 +34,12 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 ### Core Capabilities
 
 - **Multi-Tenant Architecture** — Organizations, projects, and team-based access control
-- **Dataset Management** — Create, import (CSV/JSON), and version test datasets
+- **Dataset Management** — Create and manage test datasets with test cases
 - **LLM Provider Support** — OpenAI, Anthropic, Azure OpenAI, AWS Bedrock, Google Vertex AI, Custom APIs
 - **20+ Evaluation Metrics** — Traditional NLP, RAG-specific, and LLM-as-Judge
 - **Parallel Execution** — Fast evaluation with automatic retry handling
-- **CI/CD Integration** — API keys, webhooks, GitHub/GitLab integration
+- **CI/CD Integration** — REST API triggers with GitHub/GitLab integration
 - **Cost & Token Tracking** — Monitor usage and costs across evaluations
-- **Regression Detection** — Compare runs and detect quality degradation
 
 ### Supported Metrics
 
@@ -57,11 +56,10 @@ Define Projects → Upload Datasets → Configure Endpoints → Select Metrics �
 
 | Component | Technology |
 |---|---|
-| Backend API | Spring Boot 3.x (Java 21) |
+| Backend API | Spring Boot 4.x (Java 21) |
 | Evaluation Engine | FastAPI (Python 3.11) |
 | Frontend | Next.js 14 (React 18) |
 | Database | PostgreSQL 16 |
-| Cache | Redis 7 |
 
 ---
 

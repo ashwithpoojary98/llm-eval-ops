@@ -21,6 +21,11 @@ const sidebars = {
       label: 'Integration',
       items: ['cicd-integration'],
     },
+    {
+      type: 'category',
+      label: 'Help',
+      items: ['troubleshooting'],
+    },
   ],
 };
 

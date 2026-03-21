@@ -15,7 +15,6 @@ Get LLMOps Eval running locally in minutes.
 | Python | 3.11+ |
 | Node.js | 18+ |
 | PostgreSQL | 16 |
-| Redis | 7 |
 | Docker | Optional |
 
 ---
@@ -25,8 +24,8 @@ Get LLMOps Eval running locally in minutes.
 The fastest way to get started.
 
 ```bash
-git clone https://github.com/ashwithpoojary98/llmops-eval.git
-cd llmops-eval
+git clone https://github.com/ashwithpoojary98/llm-eval-ops.git
+cd llm-eval-ops
 
 docker-compose up -d
 ```
@@ -43,8 +42,8 @@ Access:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ashwithpoojary98/llmops-eval.git
-cd llmops-eval
+git clone https://github.com/ashwithpoojary98/llm-eval-ops.git
+cd llm-eval-ops
 ```
 
 ### 2. Database Setup
@@ -53,7 +52,7 @@ cd llmops-eval
 # Using Docker
 docker run -d \
   --name postgres-llmops \
-  -e POSTGRES_DB=llmops_eval \
+  -e POSTGRES_DB=llmevalplatform \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 \
@@ -64,12 +63,15 @@ docker run -d \
 
 ```bash
 # Set environment variables
-export DATABASE_URL=jdbc:postgresql://localhost:5432/llmops_eval
-export DATABASE_USERNAME=postgres
-export DATABASE_PASSWORD=postgres
-export JWT_SECRET_KEY=your-secure-secret-key
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/llmevalplatform
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=postgres
+export JWT_SECRET_KEY=your-secure-secret-key-at-least-32-chars
 export LLMOPS_ADMIN_EMAIL=admin@example.com
 export LLMOPS_ADMIN_PASSWORD=ChangeMe123!
+export LLMOPS_ORG_NAME="My Organization"
+export LLMOPS_ALLOWED_DOMAINS=example.com
+export CORS_ALLOWED_ORIGINS=http://localhost:3000
 
 # Run
 ./mvnw spring-boot:run
