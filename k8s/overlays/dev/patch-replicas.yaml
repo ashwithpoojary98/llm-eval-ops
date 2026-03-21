@@ -1,0 +1,21 @@
+# Dev: scale all deployments to 1 replica to save resources
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    kind: Deployment
+    name: backend
+
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    kind: Deployment
+    name: evaluation-engine
+
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    kind: Deployment
+    name: frontend

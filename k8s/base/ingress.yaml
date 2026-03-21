@@ -1,0 +1,48 @@
+---
+# ── Ingress (nginx ingress controller) ────────────────────────────────────────
+# Routes:
+#   /api/*   → backend:8080   (Spring Boot)
+#   /*       → frontend:3000  (Next.js)
+#   /eval/*  → evaluation-engine:8000 (internal only — remove if not needed)
+#
+# Install nginx ingress: https://kubernetes.github.io/ingress-nginx/deploy/
+# Install cert-manager:  https://cert-manager.io/docs/installation/
+# ──────────────────────────────────────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: llmops-ingress
+  namespace: llmops
+  labels:
+    app.kubernetes.io/part-of: llmops-platform
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+    # TLS — enable once cert-manager is installed
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  # tls:
+  #   - hosts:
+  #       - llmops.yourdomain.com
+  #     secretName: llmops-tls
+  rules:
+    - host: llmops.yourdomain.com   # ← change to your domain
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000

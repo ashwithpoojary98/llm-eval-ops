@@ -19,6 +19,9 @@ import {
   Database,
   Bot,
   Scale,
+  Settings2,
+  Activity,
+  Webhook,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -42,6 +45,9 @@ const otherNavigation = [
 const adminNavigation = [
   { name: "Users", href: "/admin/users", icon: UsersRound },
   { name: "Invitations", href: "/admin/invitations", icon: UserPlus },
+  { name: "Settings", href: "/admin/settings", icon: Settings2 },
+  { name: "Health", href: "/admin/health", icon: Activity },
+  { name: "Webhooks", href: "/admin/webhooks", icon: Webhook },
 ];
 
 export function Sidebar() {

@@ -4,6 +4,7 @@ Evaluation Service - orchestrates the evaluation process.
 import asyncio
 import time
 import statistics
+import uuid
 from datetime import datetime
 from typing import Optional
 import structlog
@@ -83,26 +84,42 @@ class EvaluationService:
                 completed = 0
                 failed = 0
 
-                # Process in batches for better performance
+                # Process in batches, running each batch in parallel
                 batch_size = settings.batch_size
+                semaphore = asyncio.Semaphore(settings.max_parallel_evaluations)
+
+                async def _process_with_semaphore(test_case):
+                    async with semaphore:
+                        return await self._process_test_case(
+                            task_id=task_id,
+                            test_case=test_case,
+                            metrics=request.metrics,
+                            evaluation_mode=request.evaluation_mode,
+                            target_client=target_client,
+                            judge_client=judge_client,
+                        )
 
                 for i in range(0, len(request.test_cases), batch_size):
                     batch = request.test_cases[i:i + batch_size]
 
-                    # Process batch (could be parallelized further)
-                    for test_case in batch:
-                        try:
-                            result = await self._process_test_case(
-                                db=db,
-                                task_id=task_id,
-                                test_case=test_case,
-                                metrics=request.metrics,
-                                evaluation_mode=request.evaluation_mode,
-                                target_client=target_client,
-                                judge_client=judge_client,
-                            )
+                    # Run batch in parallel
+                    batch_results = await asyncio.gather(
+                        *[_process_with_semaphore(tc) for tc in batch],
+                        return_exceptions=True,
+                    )
 
-                            # Aggregate scores
+                    for test_case, result in zip(batch, batch_results):
+                        if isinstance(result, Exception):
+                            logger.error(
+                                "Test case processing failed",
+                                test_case_id=test_case.id,
+                                error=str(result),
+                            )
+                            failed += 1
+                            await self._store_failed_result(
+                                db, task_id, test_case.id, str(result)
+                            )
+                        else:
                             for score in result.get("scores", []):
                                 if score["metric_code"] in all_scores:
                                     if score.get("score") is not None and score.get("error") is None:
@@ -112,20 +129,7 @@ class EvaluationService:
                             total_cost += result.get("cost", 0.0)
                             completed += 1
 
-                        except Exception as e:
-                            logger.error(
-                                "Test case processing failed",
-                                test_case_id=test_case.id,
-                                error=str(e),
-                            )
-                            failed += 1
-
-                            # Store failed result
-                            await self._store_failed_result(
-                                db, task_id, test_case.id, str(e)
-                            )
-
-                    # Update progress
+                    # Update progress after each batch
                     await self._update_task_progress(
                         db, task_id, completed, failed
                     )
@@ -217,7 +221,6 @@ class EvaluationService:
 
     async def _process_test_case(
         self,
-        db: AsyncSession,
         task_id: str,
         test_case: TestCaseInput,
         metrics: list[MetricConfig],
@@ -225,15 +228,16 @@ class EvaluationService:
         target_client: Optional[BaseLLMClient],
         judge_client: Optional[BaseLLMClient],
     ) -> dict:
-        """Process a single test case."""
+        """Process a single test case. Uses its own DB session for thread safety."""
         start_time = time.time()
 
         generated_output = test_case.llm_output
         llm_latency_ms = None
-        tokens_used = 0
+        input_tokens = 0
+        output_tokens = 0
         cost = 0.0
 
-        # Live generation mode
+        # Live generation mode — LLM client is sync, run in thread to avoid blocking the event loop
         if evaluation_mode == EvaluationMode.LIVE_GENERATION:
             if not target_client:
                 raise ValueError("Target LLM client required for LIVE_GENERATION mode")
@@ -244,14 +248,17 @@ class EvaluationService:
                 context_text = "\n\n".join(test_case.retrieved_context)
                 prompt = f"Context:\n{context_text}\n\nQuestion: {test_case.question}"
 
-            # Generate response
-            response = target_client.generate_with_metadata(prompt)
+            # Sync SDK — offload to thread pool so we don't block the event loop
+            response = await asyncio.to_thread(
+                target_client.generate_with_metadata, prompt
+            )
             generated_output = response.content
             llm_latency_ms = response.latency_ms
-            tokens_used = response.total_tokens
+            input_tokens = response.input_tokens
+            output_tokens = response.output_tokens
             cost = response.metadata.get("cost_usd", 0.0)
 
-        # Calculate metrics
+        # Calculate metrics — also sync-heavy, offload to thread pool
         scores = []
         for metric_config in metrics:
             try:
@@ -261,7 +268,8 @@ class EvaluationService:
                     prompt_template=metric_config.judge_prompt_template,
                 )
 
-                result = metric.calculate(
+                result = await asyncio.to_thread(
+                    metric.calculate,
                     question=test_case.question,
                     generated_output=generated_output,
                     ground_truth=test_case.ground_truth,
@@ -300,22 +308,23 @@ class EvaluationService:
 
         processing_time_ms = int((time.time() - start_time) * 1000)
 
-        # Store result
-        await self._store_result(
-            db=db,
-            task_id=task_id,
-            test_case_id=test_case.id,
-            generated_output=generated_output if evaluation_mode == EvaluationMode.LIVE_GENERATION else None,
-            llm_latency_ms=llm_latency_ms,
-            processing_time_ms=processing_time_ms,
-            scores=scores,
-            input_tokens=tokens_used // 2 if tokens_used else 0,  # Rough split
-            output_tokens=tokens_used // 2 if tokens_used else 0,
-        )
+        # Each parallel task gets its own session to avoid shared-session race conditions
+        async with async_session_factory() as db:
+            await self._store_result(
+                db=db,
+                task_id=task_id,
+                test_case_id=test_case.id,
+                generated_output=generated_output if evaluation_mode == EvaluationMode.LIVE_GENERATION else None,
+                llm_latency_ms=llm_latency_ms,
+                processing_time_ms=processing_time_ms,
+                scores=scores,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+            )
 
         return {
             "scores": scores,
-            "tokens": tokens_used,
+            "tokens": input_tokens + output_tokens,
             "cost": cost,
         }
 
@@ -387,7 +396,7 @@ class EvaluationService:
     ):
         """Update task status."""
         result = await db.execute(
-            select(EvaluationTask).where(EvaluationTask.id == task_id)
+            select(EvaluationTask).where(EvaluationTask.id == uuid.UUID(task_id))
         )
         task = result.scalar_one()
         task.status = status.value
@@ -407,7 +416,7 @@ class EvaluationService:
     ):
         """Update task progress."""
         result = await db.execute(
-            select(EvaluationTask).where(EvaluationTask.id == task_id)
+            select(EvaluationTask).where(EvaluationTask.id == uuid.UUID(task_id))
         )
         task = result.scalar_one()
         task.completed_count = completed
@@ -428,7 +437,7 @@ class EvaluationService:
     ):
         """Finalize task with results."""
         result = await db.execute(
-            select(EvaluationTask).where(EvaluationTask.id == task_id)
+            select(EvaluationTask).where(EvaluationTask.id == uuid.UUID(task_id))
         )
         task = result.scalar_one()
 
@@ -443,12 +452,28 @@ class EvaluationService:
 
         await db.commit()
 
-    async def _send_callback(self, url: str, data: dict):
-        """Send callback notification to Spring Boot."""
-        try:
-            async with httpx.AsyncClient(timeout=30) as client:
-                response = await client.post(url, json=data)
-                response.raise_for_status()
-                logger.info("Callback sent successfully", url=url)
-        except Exception as e:
-            logger.error("Callback failed", url=url, error=str(e))
+    async def _send_callback(self, url: str, data: dict, max_retries: int = 3):
+        """Send callback notification to Spring Boot with exponential-backoff retry."""
+        delays = [2, 10, 30]  # seconds between attempts
+        headers = {}
+        if settings.callback_secret:
+            headers["X-Callback-Secret"] = settings.callback_secret
+
+        for attempt in range(max_retries):
+            try:
+                async with httpx.AsyncClient(timeout=30) as client:
+                    response = await client.post(url, json=data, headers=headers)
+                    response.raise_for_status()
+                    logger.info("Callback sent successfully", url=url, attempt=attempt + 1)
+                    return
+            except Exception as e:
+                logger.warning(
+                    "Callback attempt failed",
+                    url=url,
+                    attempt=attempt + 1,
+                    error=str(e),
+                )
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(delays[attempt])
+
+        logger.error("Callback permanently failed after retries", url=url)

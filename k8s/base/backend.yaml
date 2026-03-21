@@ -1,0 +1,177 @@
+---
+# ── ConfigMap ─────────────────────────────────────────────────────────────────
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: llmops
+  labels:
+    app: backend
+    app.kubernetes.io/part-of: llmops-platform
+data:
+  DATABASE_URL: "jdbc:postgresql://postgres:5432/llmevalplatform"
+  DATABASE_USERNAME: "postgres"
+  LLMOPS_ORG_NAME: "My Organization"
+  LLMOPS_ALLOWED_DOMAINS: "example.com"
+  LLMOPS_BASE_URL: "https://llmops.yourdomain.com"
+  EVALUATION_ENGINE_URL: "http://evaluation-engine:8000"
+  EVALUATION_CALLBACK_URL: "http://backend:8080/api/evaluations/callback"
+  MAIL_HOST: "smtp.gmail.com"
+  MAIL_PORT: "587"
+  MAIL_FROM: "noreply@llmops.io"
+  MAIL_FROM_NAME: "LLMOps Platform"
+
+---
+# ── Deployment ────────────────────────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: llmops
+  labels:
+    app: backend
+    app.kubernetes.io/part-of: llmops-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      initContainers:
+        # Wait for Postgres to be ready before starting
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z postgres 5432; do
+                echo "Waiting for postgres..."; sleep 2;
+              done
+      containers:
+        - name: backend
+          image: ghcr.io/ashwithpoojary98/llmops-eval-backend:latest
+          # For local: set image to llmops-backend:latest and imagePullPolicy: Never
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: backend-config
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: postgres-password
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: jwt-secret-key
+            - name: APP_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: app-encryption-key
+            - name: LLMOPS_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: admin-email
+            - name: LLMOPS_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: admin-password
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: mail-username
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: llmops-secrets
+                  key: mail-password
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            failureThreshold: 3
+
+---
+# ── Service ───────────────────────────────────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: llmops
+  labels:
+    app: backend
+    app.kubernetes.io/part-of: llmops-platform
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+# ── HorizontalPodAutoscaler ───────────────────────────────────────────────────
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+  namespace: llmops
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

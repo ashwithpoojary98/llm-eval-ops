@@ -441,3 +441,111 @@ export interface EvaluationResult {
   createdAt: string;
   scores: EvaluationScore[];
 }
+
+// ── Admin Settings ────────────────────────────────────────────────────────────
+export interface EmailConfigResponse {
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUsername?: string;
+  hasPassword: boolean;
+  fromAddress?: string;
+  fromName?: string;
+  enableTls: boolean;
+  enableSsl: boolean;
+  connectionTimeoutMs: number;
+  emailEnabled: boolean;
+  configured: boolean;
+  lastUpdatedAt?: string;
+}
+
+export interface TestEmailResponse {
+  success: boolean;
+  message: string;
+  errorDetail?: string;
+  latencyMs: number;
+}
+
+export interface PlatformSettingsResponse {
+  baseUrl?: string;
+  platformName?: string;
+  supportEmail?: string;
+}
+
+// ── LLM Health ────────────────────────────────────────────────────────────────
+export type HealthStatus = "UP" | "DOWN" | "DEGRADED" | "UNKNOWN";
+export type CheckType = "SCHEDULED" | "MANUAL";
+
+export interface LlmHealthResponse {
+  recordId?: string;
+  endpointId: string;
+  endpointName?: string;
+  providerType?: string;
+  modelName?: string;
+  status: HealthStatus;
+  latencyMs?: number;
+  httpStatusCode?: number;
+  errorMessage?: string;
+  contextWindow?: number;
+  maxOutputTokens?: number;
+  checkType?: CheckType;
+  checkedAt?: string;
+}
+
+export interface EndpointHealthSummary {
+  endpointId: string;
+  endpointName?: string;
+  providerType?: string;
+  modelName?: string;
+  status: HealthStatus;
+  latencyMs?: number;
+  lastCheckedAt?: string;
+  lastErrorMessage?: string;
+  consecutiveFailures?: number;
+  uptimePercentage?: number;
+}
+
+export interface HealthDashboardResponse {
+  totalEndpoints: number;
+  upCount: number;
+  downCount: number;
+  degradedCount: number;
+  unknownCount: number;
+  endpoints: EndpointHealthSummary[];
+}
+
+// ── Webhooks ──────────────────────────────────────────────────────────────────
+export type DeliveryStatus = "PENDING" | "SUCCESS" | "FAILED" | "RETRYING";
+
+export interface WebhookResponse {
+  id: string;
+  organizationId: string;
+  projectId?: string;
+  projectName?: string;
+  name: string;
+  url: string;
+  hasSecret: boolean;
+  events: string[];
+  isActive: boolean;
+  failureCount: number;
+  lastTriggeredAt?: string;
+  createdById: string;
+  createdByName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WebhookDeliveryResponse {
+  id: string;
+  webhookId: string;
+  eventType: string;
+  payload: Record<string, unknown>;
+  status: DeliveryStatus;
+  responseStatusCode?: number;
+  responseBody?: string;
+  errorMessage?: string;
+  attemptCount: number;
+  maxAttempts: number;
+  nextRetryAt?: string;
+  triggeredAt: string;
+  deliveredAt?: string;
+}

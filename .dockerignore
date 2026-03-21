@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# Build output
+target/
+frontend/.next/
+frontend/node_modules/
+evaluation-engine/venv/
+evaluation-engine/__pycache__/
+evaluation-engine/.pytest_cache/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Docs & assets (not needed in image)
+website/
+docs/
+assets/
+*.md
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db

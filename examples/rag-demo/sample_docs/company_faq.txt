@@ -1,0 +1,68 @@
+COMPANY FAQ — TechCorp Inc.
+
+=== BILLING ===
+
+Q: How do I update my payment method?
+A: Go to Account Settings > Billing > Payment Methods. Click "Add Card" to add a new card or click the trash icon to remove an old one. Changes take effect on your next billing cycle.
+
+Q: Why was I charged twice?
+A: Duplicate charges happen when an initial payment attempt fails and the system automatically retries. If both charges appear as successful on your bank statement, contact support@techcorp.com and we will issue a refund within 3-5 business days.
+
+Q: Can I get a refund?
+A: We offer full refunds within 14 days of purchase for annual plans. Monthly plans are non-refundable. Enterprise contracts follow the terms in your signed agreement.
+
+Q: What happens if my payment fails?
+A: We retry your payment 3 times over 7 days. Your account enters a grace period where features remain accessible. If payment still fails after 7 days, your account is suspended but not deleted.
+
+Q: Do you offer discounts for nonprofits?
+A: Yes, we offer 40% discount for verified nonprofits and 30% for educational institutions. Apply via our website at techcorp.com/nonprofit.
+
+=== ACCOUNT ===
+
+Q: How do I cancel my subscription?
+A: Go to Settings > Subscription > Cancel Plan. Your access continues until the end of your current billing cycle. Cancellation takes effect immediately for monthly plans and at renewal for annual plans. We do not offer prorated refunds for mid-cycle cancellations.
+
+Q: How do I change my email address?
+A: Go to Settings > Profile > Email. Enter your new email and verify it by clicking the link sent to the new address. Your old email will stop working for login immediately.
+
+Q: Can I have multiple accounts?
+A: One account per person is allowed under our Terms of Service. Teams should use our Team plan which supports multiple users under one organization. Contact sales@techcorp.com for Team plan pricing.
+
+Q: How do I reset my password?
+A: Click "Forgot Password" on the login page and enter your email. You will receive a reset link within 5 minutes. Links expire after 1 hour. If you do not see the email, check your spam folder.
+
+=== FEATURES ===
+
+Q: What is the API rate limit?
+A: Rate limits depend on your plan. Free: 100 requests/hour. Starter: 1,000 requests/hour. Pro: 10,000 requests/hour. Enterprise: custom. Rate limits reset every hour on the dot. Headers X-RateLimit-Remaining and X-RateLimit-Reset are included in every response.
+
+Q: Is there a free tier?
+A: Yes. The Free tier includes 100 API calls/hour, 1 project, 5 GB storage, and community support. It never expires. You can upgrade anytime.
+
+Q: Does your API support webhooks?
+A: Yes. Webhooks are available on Starter plans and above. You can register up to 5 webhook URLs on Starter, 20 on Pro, and unlimited on Enterprise. Webhooks are signed with HMAC-SHA256. Payload delivery is retried 3 times with exponential backoff.
+
+Q: What data formats does the export support?
+A: We support CSV, JSON, and Parquet export. Enterprise plans also support direct database export to Postgres or BigQuery via our Data Sync feature.
+
+=== SECURITY ===
+
+Q: Where is my data stored?
+A: All data is stored in AWS US-East-1 by default. European customers can opt into EU-West-1 (Ireland) data residency from Account Settings > Data Region. Enterprise contracts can request dedicated storage regions.
+
+Q: Is my data encrypted?
+A: Yes. Data is encrypted in transit using TLS 1.3 and at rest using AES-256. Encryption keys are managed via AWS KMS. We do not have access to your encryption keys.
+
+Q: Are you SOC 2 compliant?
+A: Yes, we are SOC 2 Type II certified. Our latest audit report is available to Enterprise customers under NDA. Contact sales@techcorp.com.
+
+Q: Can I delete my data?
+A: Yes. Go to Settings > Privacy > Delete Account. All your data is permanently deleted within 30 days in accordance with our data retention policy. We will send a confirmation email when deletion is complete.
+
+=== SUPPORT ===
+
+Q: How do I contact support?
+A: Free/Starter: community forum at community.techcorp.com. Pro: email support at support@techcorp.com with 24-hour response SLA. Enterprise: dedicated Slack channel with 4-hour response SLA and a named account manager.
+
+Q: Is there documentation?
+A: Full API documentation is at docs.techcorp.com. We also have video tutorials at techcorp.com/tutorials and a changelog at techcorp.com/changelog.

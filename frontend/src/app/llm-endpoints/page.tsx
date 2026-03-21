@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { DashboardLayout } from "@/components/layout";
@@ -53,7 +53,7 @@ const MODEL_OPTIONS: Record<ProviderType, string[]> = {
   CUSTOM: [],
 };
 
-export default function AllLlmEndpointsPage() {
+function AllLlmEndpointsPageInner() {
   const searchParams = useSearchParams();
   const llmType = searchParams.get("type"); // "client" or "judge"
 
@@ -690,5 +690,13 @@ export default function AllLlmEndpointsPage() {
         </div>
       </Modal>
     </DashboardLayout>
+  );
+}
+
+export default function AllLlmEndpointsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" /></div>}>
+      <AllLlmEndpointsPageInner />
+    </Suspense>
   );
 }

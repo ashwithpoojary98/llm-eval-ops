@@ -19,6 +19,9 @@ public interface LlmEndpointRepository extends JpaRepository<LlmEndpoint, UUID> 
 
     boolean existsByProjectIdAndName(UUID projectId, String name);
 
+    /** Used by health check scheduler to probe all active endpoints across all projects. */
+    List<LlmEndpoint> findByIsActiveTrue();
+
     Page<LlmEndpoint> findByProjectIdAndIsActiveTrue(UUID projectId, Pageable pageable);
 
     Page<LlmEndpoint> findByProjectId(UUID projectId, Pageable pageable);

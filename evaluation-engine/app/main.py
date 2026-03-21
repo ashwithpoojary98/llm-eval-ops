@@ -78,23 +78,20 @@ app.add_middleware(
 # Validation error handler with detailed logging
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Log the full request body and errors for debugging
-    try:
-        body = await request.body()
-        logger.error(
-            "Validation error",
-            errors=exc.errors(),
-            body=body.decode() if body else None,
-        )
-    except Exception as e:
-        logger.error("Validation error (could not read body)", errors=exc.errors(), error=str(e))
-
+    # Log field names and error types only — never the raw request body (may contain secrets/PII)
+    safe_errors = [
+        {"field": ".".join(str(l) for l in e.get("loc", [])), "type": e.get("type"), "msg": e.get("msg")}
+        for e in exc.errors()
+    ]
+    logger.error(
+        "Validation error",
+        path=str(request.url.path),
+        method=request.method,
+        errors=safe_errors,
+    )
     return JSONResponse(
         status_code=422,
-        content={
-            "detail": exc.errors(),
-            "message": "Validation failed. Check server logs for request body.",
-        },
+        content={"detail": exc.errors()},
     )
 
 

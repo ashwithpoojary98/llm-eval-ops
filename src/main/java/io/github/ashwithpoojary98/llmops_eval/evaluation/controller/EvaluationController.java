@@ -10,6 +10,7 @@ import io.github.ashwithpoojary98.llmops_eval.evaluation.service.EvaluationServi
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,9 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class EvaluationController {
+
+    @Value("${evaluation.engine.callback-secret:}")
+    private String callbackSecret;
 
     private final EvaluationService evaluationService;
     private final UserService userService;
@@ -199,14 +203,21 @@ public class EvaluationController {
     }
 
     /**
-     * Callback endpoint for evaluation engine.
-     * This is called by the FastAPI evaluation engine when an evaluation completes.
+     * Internal callback endpoint called by the evaluation engine on completion.
+     * Protected by a shared secret sent in X-Callback-Secret header.
      */
     @PostMapping("/api/evaluations/callback/{evaluationId}")
     public ResponseEntity<Void> evaluationCallback(
             @PathVariable String evaluationId,
-            @RequestBody EvaluationCallbackPayload payload
+            @RequestHeader(value = "X-Callback-Secret", required = false) String providedSecret,
+            @RequestBody @Valid EvaluationCallbackPayload payload
     ) {
+        if (callbackSecret != null && !callbackSecret.isBlank()) {
+            if (providedSecret == null || !callbackSecret.equals(providedSecret)) {
+                log.warn("Rejected callback for run {} — invalid or missing X-Callback-Secret", evaluationId);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        }
         log.info("Received evaluation callback for run: {}", evaluationId);
         evaluationService.handleEvaluationCallback(evaluationId, payload);
         return ResponseEntity.ok().build();

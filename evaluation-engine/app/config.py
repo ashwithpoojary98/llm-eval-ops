@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     # Spring Boot Backend (for callbacks)
     spring_boot_url: str = "http://localhost:8080"
     spring_boot_api_key: Optional[str] = None
+    # Shared secret sent in X-Callback-Secret header — must match EVALUATION_CALLBACK_SECRET in Spring Boot
+    callback_secret: Optional[str] = None
 
     # Default LLM Settings
     default_temperature: float = 0.7

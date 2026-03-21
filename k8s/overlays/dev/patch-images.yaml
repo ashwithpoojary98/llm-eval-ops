@@ -1,0 +1,42 @@
+# Dev: use locally built images (never pull from registry)
+- op: replace
+  path: /spec/template/spec/containers/0/image
+  value: llmops-backend:latest
+  target:
+    kind: Deployment
+    name: backend
+
+- op: replace
+  path: /spec/template/spec/containers/0/imagePullPolicy
+  value: Never
+  target:
+    kind: Deployment
+    name: backend
+
+- op: replace
+  path: /spec/template/spec/containers/0/image
+  value: llmops-eval-engine:latest
+  target:
+    kind: Deployment
+    name: evaluation-engine
+
+- op: replace
+  path: /spec/template/spec/containers/0/imagePullPolicy
+  value: Never
+  target:
+    kind: Deployment
+    name: evaluation-engine
+
+- op: replace
+  path: /spec/template/spec/containers/0/image
+  value: llmops-frontend:latest
+  target:
+    kind: Deployment
+    name: frontend
+
+- op: replace
+  path: /spec/template/spec/containers/0/imagePullPolicy
+  value: Never
+  target:
+    kind: Deployment
+    name: frontend

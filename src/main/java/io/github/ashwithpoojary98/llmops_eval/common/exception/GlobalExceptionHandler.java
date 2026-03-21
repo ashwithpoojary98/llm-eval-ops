@@ -10,6 +10,7 @@ import io.github.ashwithpoojary98.llmops_eval.project.exception.ProjectNotFoundE
 import io.github.ashwithpoojary98.llmops_eval.team.exception.TeamMemberNotFoundException;
 import io.github.ashwithpoojary98.llmops_eval.team.exception.TeamNotFoundException;
 import io.github.ashwithpoojary98.llmops_eval.testcases.exception.TestCaseNotFoundException;
+import io.github.ashwithpoojary98.llmops_eval.webhook.exception.WebhookNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -198,6 +199,20 @@ public class GlobalExceptionHandler {
                         .success(false)
                         .statusCode(HttpStatus.NOT_FOUND.value())
                         .errorCode("EVALUATION_NOT_FOUND")
+                        .error(ex.getMessage())
+                        .timestamp(Instant.now())
+                        .build());
+    }
+
+    @ExceptionHandler(WebhookNotFoundException.class)
+    public ResponseEntity<APIResponse<Void>> handleWebhookNotFoundException(WebhookNotFoundException ex) {
+        log.warn("Webhook not found: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(APIResponse.<Void>builder()
+                        .success(false)
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .errorCode("WEBHOOK_NOT_FOUND")
                         .error(ex.getMessage())
                         .timestamp(Instant.now())
                         .build());

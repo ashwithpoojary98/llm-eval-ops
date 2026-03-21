@@ -1,12 +1,14 @@
 package io.github.ashwithpoojary98.llmops_eval.notification.service;
 
 import io.github.ashwithpoojary98.llmops_eval.notification.dto.EmailRequest;
+import io.github.ashwithpoojary98.llmops_eval.settings.service.AdminSettingService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class SmtpEmailService implements EmailService {
 
     private final JavaMailSender mailSender;
+    private final AdminSettingService adminSettingService;
 
     @Value("${spring.mail.from:noreply@llmeval.io}")
     private String fromEmail;
@@ -35,10 +38,21 @@ public class SmtpEmailService implements EmailService {
     @Override
     public void send(EmailRequest request) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
+            // Use org-configured SMTP if organizationId is provided and email is enabled
+            JavaMailSender sender = resolveMailSender(request);
+
+            // Resolve from-address: org config takes priority over static yaml config
+            String resolvedFrom = fromEmail;
+            String resolvedFromName = fromName;
+            if (request.getOrganizationId() != null) {
+                resolvedFrom = adminSettingService.getFromAddress(request.getOrganizationId());
+                resolvedFromName = adminSettingService.getFromName(request.getOrganizationId());
+            }
+
+            MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom(fromEmail, fromName);
+            helper.setFrom(resolvedFrom, resolvedFromName);
             helper.setTo(request.getTo());
             helper.setSubject(request.getSubject());
             helper.setText(request.getBody(), request.isHtml());
@@ -46,12 +60,11 @@ public class SmtpEmailService implements EmailService {
             if (request.getCc() != null && !request.getCc().isEmpty()) {
                 helper.setCc(request.getCc().toArray(new String[0]));
             }
-
             if (request.getBcc() != null && !request.getBcc().isEmpty()) {
                 helper.setBcc(request.getBcc().toArray(new String[0]));
             }
 
-            mailSender.send(message);
+            sender.send(message);
             log.info("Email sent successfully to: {}", request.getTo());
 
         } catch (MessagingException e) {
@@ -61,6 +74,15 @@ public class SmtpEmailService implements EmailService {
             log.error("Unexpected error sending email to: {}", request.getTo(), e);
             throw new RuntimeException("Failed to send email", e);
         }
+    }
+
+    /** Use org-configured dynamic sender when available; fall back to Spring-injected sender. */
+    private JavaMailSender resolveMailSender(EmailRequest request) {
+        if (request.getOrganizationId() != null
+                && adminSettingService.isEmailEnabled(request.getOrganizationId())) {
+            return adminSettingService.buildMailSender(request.getOrganizationId());
+        }
+        return mailSender;
     }
 
     @Override

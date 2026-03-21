@@ -2,7 +2,7 @@
 Health check endpoints.
 """
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,7 +38,7 @@ async def readiness_check(db: AsyncSession = Depends(get_db)):
         await db.execute(text("SELECT 1"))
         return {"status": "ready"}
     except Exception:
-        return {"status": "not ready"}, 503
+        raise HTTPException(status_code=503, detail="Service not ready")
 
 
 @router.get("/live")

@@ -1,0 +1,151 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# LLMOps Eval Platform — Full Stack Docker Compose
+#
+# Services:
+#   postgres          — PostgreSQL 16 (shared DB)
+#   backend           — Spring Boot API (port 8080)
+#   evaluation-engine — Python FastAPI engine (port 8000)
+#   frontend          — Next.js UI (port 3000)
+#
+# Quick start:
+#   cp .env.example .env          # fill in secrets
+#   docker compose up -d
+#   open http://localhost:3000
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: llmops-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-llmevalplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-llmevalplatform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - llmops-net
+
+  # ── Spring Boot Backend ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llmops-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-llmevalplatform}
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+
+      # JWT
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-to-a-secure-256-bit-secret-key-in-production}
+      JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_TOKEN_EXPIRATION:-1800000}
+      JWT_REFRESH_TOKEN_EXPIRATION: ${JWT_REFRESH_TOKEN_EXPIRATION:-604800000}
+
+      # Admin bootstrap
+      LLMOPS_ADMIN_EMAIL: ${LLMOPS_ADMIN_EMAIL:-admin@example.com}
+      LLMOPS_ADMIN_PASSWORD: ${LLMOPS_ADMIN_PASSWORD:-ChangeMe123!}
+      LLMOPS_ORG_NAME: ${LLMOPS_ORG_NAME:-My Organization}
+      LLMOPS_ALLOWED_DOMAINS: ${LLMOPS_ALLOWED_DOMAINS:-example.com}
+      LLMOPS_BASE_URL: ${LLMOPS_BASE_URL:-http://localhost:3000}
+
+      # Encryption
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:-change-this-to-a-32-char-key-prod}
+
+      # Evaluation engine callback
+      EVALUATION_ENGINE_URL: http://evaluation-engine:8000
+      EVALUATION_CALLBACK_URL: http://backend:8080/api/evaluations/callback
+
+      # Mail (optional — can be configured via Admin UI instead)
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-noreply@llmops.io}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-LLMOps Platform}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api/auth/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - llmops-net
+
+  # ── Python Evaluation Engine ────────────────────────────────────────────────
+  evaluation-engine:
+    build:
+      context: ./evaluation-engine
+      dockerfile: Dockerfile
+    container_name: llmops-eval-engine
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-llmevalplatform}
+      SPRING_BOOT_URL: http://backend:8080
+      DEBUG: ${DEBUG:-false}
+    ports:
+      - "${ENGINE_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - llmops-net
+
+  # ── Next.js Frontend ────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
+    container_name: llmops-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - llmops-net
+
+networks:
+  llmops-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
