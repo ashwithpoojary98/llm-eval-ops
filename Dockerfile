@@ -7,6 +7,9 @@ WORKDIR /app
 COPY mvnw mvnw.cmd pom.xml ./
 COPY .mvn .mvn
 
+# Ensure mvnw is executable (git may not preserve the bit on Windows checkouts)
+RUN chmod +x mvnw
+
 # Download dependencies (cached unless pom.xml changes)
 RUN ./mvnw dependency:go-offline -q
 
