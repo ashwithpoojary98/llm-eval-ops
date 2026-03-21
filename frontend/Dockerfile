@@ -16,6 +16,9 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
+# Ensure public dir exists — Next.js doesn't create it if there are no static assets
+RUN mkdir -p public
+
 RUN npm run build
 
 # ── Stage 3: Minimal runtime ──────────────────────────────────────────────────
