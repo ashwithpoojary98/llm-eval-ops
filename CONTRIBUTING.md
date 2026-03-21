@@ -61,11 +61,11 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 ```bash
 # Fork the repository on GitHub
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/llmops-eval.git
-cd llmops-eval
+git clone https://github.com/YOUR_USERNAME/llm-eval-ops.git
+cd llm-eval-ops
 
 # Add upstream remote
-git remote add upstream https://github.com/ashwithpoojary98/llmops-eval.git
+git remote add upstream https://github.com/ashwithpoojary98/llm-eval-ops.git
 ```
 
 ### 2. Database Setup
@@ -363,8 +363,8 @@ llmops-eval/
 ## Getting Help
 
 - Check the [documentation](docs/)
-- Search [existing issues](https://github.com/ashwithpoojary98/llmops-eval/issues)
-- Ask in [GitHub Discussions](https://github.com/ashwithpoojary98/llmops-eval/discussions)
+- Search [existing issues](https://github.com/ashwithpoojary98/llm-eval-ops/issues)
+- Ask in [GitHub Discussions](https://github.com/ashwithpoojary98/llm-eval-ops/discussions)
 - Join our community (Discord link coming soon)
 
 ## Recognition

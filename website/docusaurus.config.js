@@ -28,11 +28,11 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          editUrl: 'https://github.com/ashwithpoojary98/llmops-eval/tree/main/website/',
+          editUrl: 'https://github.com/ashwithpoojary98/llm-eval-ops/tree/main/website/',
         },
         blog: {
           showReadingTime: true,
-          editUrl: 'https://github.com/ashwithpoojary98/llmops-eval/tree/main/website/',
+          editUrl: 'https://github.com/ashwithpoojary98/llm-eval-ops/tree/main/website/',
           blogTitle: 'LLMOps Eval Blog',
           blogDescription: 'Updates, tutorials, and news about LLMOps Eval',
         },
@@ -62,7 +62,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/ashwithpoojary98/llmops-eval',
+            href: 'https://github.com/ashwithpoojary98/llm-eval-ops',
             label: 'GitHub',
             position: 'right',
           },
@@ -84,11 +84,11 @@ const config = {
             items: [
               {
                 label: 'GitHub Issues',
-                href: 'https://github.com/ashwithpoojary98/llmops-eval/issues',
+                href: 'https://github.com/ashwithpoojary98/llm-eval-ops/issues',
               },
               {
                 label: 'GitHub Discussions',
-                href: 'https://github.com/ashwithpoojary98/llmops-eval/discussions',
+                href: 'https://github.com/ashwithpoojary98/llm-eval-ops/discussions',
               },
             ],
           },
@@ -98,7 +98,7 @@ const config = {
               { label: 'Blog', to: '/blog' },
               {
                 label: 'GitHub',
-                href: 'https://github.com/ashwithpoojary98/llmops-eval',
+                href: 'https://github.com/ashwithpoojary98/llm-eval-ops',
               },
             ],
           },

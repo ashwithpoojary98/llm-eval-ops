@@ -76,7 +76,7 @@ function HeroBanner() {
           </Link>
           <Link
             className="button button--secondary button--lg"
-            href="https://github.com/ashwithpoojary98/llmops-eval"
+            href="https://github.com/ashwithpoojary98/llm-eval-ops"
           >
             ⭐ Star on GitHub
           </Link>
@@ -210,7 +210,7 @@ function CTASection() {
         <Link
           className="button button--outline button--lg"
           style={{ color: 'white', borderColor: 'white' }}
-          href="https://github.com/ashwithpoojary98/llmops-eval"
+          href="https://github.com/ashwithpoojary98/llm-eval-ops"
         >
           View on GitHub
         </Link>
